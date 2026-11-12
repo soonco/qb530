@@ -9,6 +9,7 @@ import socket
 import traceback
 
 from http.server import HTTPServer, BaseHTTPRequestHandler
+from socketserver import TCPServer
 
 chunked_encoding = False
 keepalive = True
@@ -27,6 +28,12 @@ except Exception:
 class http_server_with_timeout(HTTPServer):
     allow_reuse_address = True
     timeout = 250
+
+    def server_bind(self):
+        # HTTPServer resolves the host's FQDN before returning from bind.
+        # Test-server startup must not wait for the runner's DNS resolver.
+        TCPServer.server_bind(self)
+        self.server_name, self.server_port = self.server_address[:2]
 
     def handle_timeout(self):
         print('TIMEOUT')
