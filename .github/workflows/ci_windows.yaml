@@ -122,9 +122,19 @@ jobs:
         with:
           version: "6.10.3"
           arch: ${{ matrix.config.qt_arch }}
-          archives: qtbase qtsvg qttools
+          # lupdate from qttools needs the QML runtime provided by qtdeclarative.
+          archives: qtbase qtdeclarative qtsvg qttools
           modules: qtimageformats
           cache: true
+
+      - name: Verify Qt translation tools
+        run: |
+          $qtBin = Join-Path $env:QT_ROOT_DIR "bin"
+          foreach ($tool in @("lupdate", "lrelease"))
+          {
+            & (Join-Path $qtBin "$tool.exe") -version
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
 
       - name: Install libtorrent
         run: |

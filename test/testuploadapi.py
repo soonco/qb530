@@ -1,15 +1,22 @@
 """Run against a built nox binary, using an isolated profile and localhost only."""
 import json
 import os
-from pathlib import Path
 import signal
 import socket
-import subprocess
+import subprocess  # Integration test launches the caller-supplied binary.  # nosec B404
 import sys
 import tempfile
 import time
 import urllib.parse
 import urllib.request
+from pathlib import Path
+from typing import TypedDict, cast
+
+
+class UploadPreferences(TypedDict):
+    fake_upload_ratio: int
+    fake_upload_ratio_randomization: bool
+
 
 binary = Path(sys.argv[1]).resolve()
 with tempfile.TemporaryDirectory(prefix="upload-api-") as tmp:
@@ -29,17 +36,23 @@ with tempfile.TemporaryDirectory(prefix="upload-api-") as tmp:
         "[Preferences]\nConnection\\UPnP=false\n")
     env = dict(os.environ, QT_QPA_PLATFORM="offscreen")
     with (profile / "output.log").open("w+") as log:
-        process = subprocess.Popen(
+        # Run the explicit test binary with fixed arguments and no shell.
+        process = subprocess.Popen(  # nosec B603
             [str(binary), f"--profile={profile}", "--confirm-legal-notice"],
             stdout=log, stderr=log, env=env)
         base = f"http://127.0.0.1:{port}"
-        def request(path, data=None):
+
+        def request(path: str, data: dict[str, str] | None = None) -> bytes:
             body = None if data is None else urllib.parse.urlencode(data).encode()
             req = urllib.request.Request(base + path, body, headers={"Referer": base})
-            return urllib.request.urlopen(req, timeout=3).read()
-        def preferences():
-            return json.loads(request("/api/v2/app/preferences"))
-        def update(values, expected):
+            # The URL uses the fixed localhost HTTP base and test-owned API paths.
+            result: bytes = urllib.request.urlopen(req, timeout=3).read()  # nosec B310
+            return result
+
+        def preferences() -> UploadPreferences:
+            return cast(UploadPreferences, json.loads(request("/api/v2/app/preferences")))
+
+        def update(values: dict[str, int | bool], expected: tuple[int, bool]) -> None:
             request("/api/v2/app/setPreferences", {"json": json.dumps(values)})
             p = preferences()
             assert (p["fake_upload_ratio"], p["fake_upload_ratio_randomization"]) == expected, p

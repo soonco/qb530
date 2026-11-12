@@ -3635,7 +3635,7 @@ Use ';' to split multiple entries. Can use wildcard '*'.)QBT_TR[CONTEXT=OptionsD
             });
 
             document.getElementById("deleteTorrentFileAfterCheckbox").addEventListener("change", (e) => { updateDeleteCancelledTorrentEnabled(); });
-            document.getElementById("fakeUploadRatio").addEventListener("change", updateFakeUploadRatioRandomizationEnabled);
+            document.getElementById("fakeUploadRatio").addEventListener("change", (event) => { updateFakeUploadRatioRandomizationEnabled(); });
 
             loadPreferences();
 

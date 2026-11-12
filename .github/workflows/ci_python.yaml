@@ -29,8 +29,9 @@ jobs:
 
       - name: Gather files (auxiliary scripts)
         run: |
-          export "PY_FILES=$(find . -type f -name '*.py' ! -path '*searchengine*' -printf '%p ')"
-          echo $PY_FILES
+          # Vendored dependencies use their own Python tooling; search engine checks run below.
+          export "PY_FILES=$(git ls-files -- '*.py' ':!:deps/**' ':!:src/searchengine/**' | tr '\n' ' ')"
+          echo "$PY_FILES"
           echo "PY_FILES=$PY_FILES" >> "$GITHUB_ENV"
 
       - name: Check typings (auxiliary scripts)
