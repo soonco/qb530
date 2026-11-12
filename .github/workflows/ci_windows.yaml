@@ -157,7 +157,7 @@ jobs:
 
       - name: Build qBittorrent
         run: |
-          $env:CXXFLAGS+="/DQT_FORCE_ASSERTS /WX"
+          $env:CXXFLAGS+=" /DQT_FORCE_ASSERTS /WX"
           cmake `
             -B build `
             -G "Ninja" `
@@ -171,9 +171,13 @@ jobs:
             -DVCPKG_TARGET_TRIPLET=${{ matrix.config.arch }}-windows-static-md-release `
             -DVERBOSE_CONFIGURE=ON `
             --graphviz=build/target_graph.dot
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build build --target qbt_update_translations
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build build --target check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Prepare build artifacts
         run: |
