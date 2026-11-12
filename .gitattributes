@@ -1,0 +1,17 @@
+core.eol=lf
+* text eol=lf
+*.icns binary
+*.ico binary
+*.png binary
+*.qm binary
+*.zip binary
+
+dist/windows/license.txt text eol=crlf
+test/testdata/crlf.txt text eol=crlf
+
+# disable line endings conversions
+dist/windows/3rdparty/* -text
+src/base/3rdparty/expected.hpp -text
+
+# Preserve vendored libtorrent sources, binary fixtures and third-party assets.
+deps/libtorrent/** -text

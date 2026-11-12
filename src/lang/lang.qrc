@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/lang">
+        <file>qbittorrent_en.qm</file>
+        <file>qbittorrent_zh_CN.qm</file>
+    </qresource>
+</RCC>
