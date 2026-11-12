@@ -11,6 +11,8 @@ CMakeLists.txt.user*
 qbittorrent.pro.user*
 conf.pri
 Makefile*
+# Vendored Makefiles are source inputs, including Automake templates.
+!deps/libtorrent/**/[Mm]akefile*
 *.log
 
 # Compiled object files

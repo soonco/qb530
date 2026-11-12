@@ -34,7 +34,6 @@ libtool
 *.exp
 
 *.m4
-*.in
 *.pc
 *.libs
 *.deps
@@ -47,7 +46,9 @@ libtool
 bin
 cmake-build-*
 CMakeLists.txt.user
-config*
+config.log
+config.status
+config.cache
 build-aux
 test_tmp_*
 libtool
