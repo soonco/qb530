@@ -147,10 +147,13 @@ jobs:
             -Dstatic_runtime=OFF `
             -DVCPKG_TARGET_TRIPLET=${{ matrix.config.arch }}-windows-static-md-release `
             ${{ matrix.libtorrent.libt_build_flags }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --build build --target torrent-rasterbar test_upload_accounting test_read_resume test_resume test_settings_pack
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ctest --test-dir build -R "^(test_upload_accounting|test_read_resume|test_resume|test_settings_pack)$" --output-on-failure
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           cmake --install build
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Build qBittorrent
         run: |
