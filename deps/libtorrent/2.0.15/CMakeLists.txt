@@ -737,7 +737,8 @@ if(NOT gnutls)
 		if(WIN32 AND OPENSSL_USE_STATIC_LIBS)
 			target_link_libraries(torrent-rasterbar PRIVATE crypt32)
 		endif()
-		target_link_libraries(torrent-rasterbar PUBLIC OpenSSL::SSL)
+		# libtorrent uses libcrypto directly; shared OpenSSL::SSL may not propagate it.
+		target_link_libraries(torrent-rasterbar PUBLIC OpenSSL::SSL OpenSSL::Crypto)
 		target_compile_definitions(torrent-rasterbar
 			PUBLIC
 				TORRENT_USE_OPENSSL
