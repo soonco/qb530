@@ -193,8 +193,13 @@ jobs:
 
       - name: Package AppImage
         run: |
-          rm -f "$QT_PLUGIN_PATH/sqldrivers/libqsqlmimer.so"
+          # qBittorrent only uses SQLite; other SQL drivers need external libraries.
+          qt_sqldrivers_path="$(qmake -query QT_INSTALL_PLUGINS)/sqldrivers"
+          test -f "$qt_sqldrivers_path/libqsqlite.so"
+          find "$qt_sqldrivers_path" -maxdepth 1 \
+            -name 'libqsql*.so' ! -name 'libqsqlite.so' -delete
           ./linuxdeploy-x86_64.AppImage --appdir qbittorrent --plugin qt
+          test -f qbittorrent/usr/plugins/sqldrivers/libqsqlite.so
           mkdir -p qbittorrent/apprun-hooks
           rm -f qbittorrent/apprun-hooks/*
           cp .github/workflows/helper/appimage/export_vars.sh qbittorrent/apprun-hooks/export_vars.sh
