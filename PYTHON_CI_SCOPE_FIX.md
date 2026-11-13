@@ -11,7 +11,7 @@
 ## 修改
 
 | 文件 | 调整及逻辑影响 |
-|---|---|
+| --- | --- |
 | `.github/workflows/ci_python.yaml` | 改用 `git ls-files` 收集已跟踪的 Python 脚本，排除 `deps/**` 与 `src/searchengine/**`；避免混入依赖脚本、构建产物和本地临时文件 |
 | `test/testuploadapi.py` | 为请求、偏好读取和更新函数补充参数、返回值类型；用 `UploadPreferences` TypedDict 描述读取的两个字段，使用 `cast` 标注 JSON 返回值；补空行并调整导入顺序 |
 | 同上 | 对显式启动测试二进制和访问固定 localhost HTTP 接口的三处调用，添加有原因说明的局部 `nosec B404`、`B603`、`B310` 标记 |

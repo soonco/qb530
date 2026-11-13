@@ -8,7 +8,7 @@
 ## 1. 目标基线与范围
 
 | 项目 | 版本 | 原始 commit |
-|---|---|---|
+| --- | --- | --- |
 | qBittorrent：`qb530` | release-5.3.0 | `9213075dd5f7b352208361c6a84c1c115efc898e` |
 | `deps/libtorrent/2.0.15` | v2.0.15 | `1eb18faeae156d8dbbab42935c082f8b81f50989` |
 | `deps/libtorrent/2.1.2` | v2.1.2 | `6da363d2994f17c0b3c0450d124cf73a31a73847` |
@@ -20,7 +20,7 @@
 ## 2. 功能与职责映射
 
 | 契约 | 实现位置与行为 | 验证 |
-|---|---|---|
+| --- | --- | --- |
 | L01–L03 | Session 接口、CachedSettingValue、loadLTSettings、configureDeferred；默认 1/true，应用夹到 1–5，引擎只限制最低 1 | nox API 实测默认、越界、独立部分更新、保存；引擎线程测试即时应用 settings 后只影响后续累计 |
 | L04–L05 | 两版 torrent 的 second_tick 调用 account_uploaded_payload；整数均匀抽样 1..R，64 位乘法，同批更新三个累计 | 固定 2→5→1、空 tick、可重复 RNG、协议字节排除、1GB×5 测试通过 |
 | L06、L09 | all_time_upload 保持倍率历史；all_time_real_uploaded 独立真实历史；m_stat/peer/session 网络计数保持真实 | 源码数据流核对，历史计数及 payload 测试通过；分享限制动作的真实任务联调未执行 |
@@ -47,7 +47,7 @@ UI 加载不回写；后端允许 `(1,true)`；API 只更新传入字段。倍�
 ## 3. 本次修改的应用文件
 
 | 文件 | 修改内容 |
-|---|---|
+| --- | --- |
 | `src/base/bittorrent/session.h` | 4 个倍率/随机化虚接口 |
 | `src/base/bittorrent/sessionimpl.h` | override 和两个缓存设置 |
 | `src/base/bittorrent/sessionimpl.cpp` | 默认/校验/保存/热更新、引擎下发、ABI 启动探测、announce 诊断 |
@@ -74,7 +74,7 @@ UI 加载不回写；后端允许 `(1,true)`；API 只更新传入字段。倍�
 下列每项均分别修改 `deps/libtorrent/2.0.15/` 和 `deps/libtorrent/2.1.2/` 下的文件：
 
 | 相对路径 | 修改内容 |
-|---|---|
+| --- | --- |
 | `include/libtorrent/settings_pack.hpp` | 在各自 bool/int 枚举尾部追加设置；不硬编码旧编号 |
 | `src/settings_pack.cpp` | 对应索引默认 true/1 |
 | `include/libtorrent/add_torrent_params.hpp` | 新真实历史上传字段，直接构造默认 0 |
@@ -144,7 +144,7 @@ UI 加载不回写；后端允许 `(1,true)`；API 只更新传入字段。倍�
 2.1.2 保持 WebTorrent 开启并实际编译 libdatachannel。使用工作区内安装前缀，未安装到系统 libtorrent 目录。
 
 | 验证 | 结果 |
-|---|---|
+| --- | --- |
 | 两版完整 libtorrent 编译 | 通过 |
 | 两版上传专项 5 个用例 | 通过：生命周期、大值、RNG、resume、HTTP/UDP 多 tracker/v1/v2 快照、保存/abort 尾部 |
 | 两版上游 test_read_resume、test_resume、test_settings_pack | 各 3 个测试目标通过 |
@@ -214,4 +214,3 @@ QT_PLUGIN_PATH=/opt/homebrew/share/qt/plugins \
 ```
 
 API 测试只使用临时 profile 和回环地址，finally 终止本次启动的进程，不修改用户现有配置。
-
