@@ -27,6 +27,9 @@ jobs:
 
       - name: Check files
         uses: j178/prek-action@v2
+        with:
+          # Only load qBittorrent's hooks; vendored dependencies have their own configs.
+          extra-args: --all-files --config .pre-commit-config.yaml
 
       - name: Check doc
         env:
